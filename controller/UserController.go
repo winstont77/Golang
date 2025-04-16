@@ -1,23 +1,23 @@
 package controller
 
-import(
+import (
+	"GolangIrisMVC/model"
 	"GolangIrisMVC/service"
 	"github.com/kataras/iris/v12"
-	"io"
 )
 
-type UserController struct{
+type UserController struct {
 	userService service.UserService
 }
 
-func (userController *UserController) Get() string{
-	return  userController.userService.GetUser()
+func (userController *UserController) Get() string {
+	return userController.userService.GetUser()
 }
 
 func (c *UserController) Post(ctx iris.Context) string {
-	body, err := io.ReadAll(ctx.Request().Body)
-	if err != nil {
-		return "Error reading body"
+	var user model.User
+	if err := ctx.ReadJSON(&user); err != nil {
+		return "Invalid JSON"
 	}
-	return c.userService.PostUser(string(body))
+	return c.userService.PostUser(user)
 }
